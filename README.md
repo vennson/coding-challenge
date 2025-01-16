@@ -1,4 +1,4 @@
-# Benson Miakoun's Coding Challenge
+# Benson Miakoun's Coding Exercise
 
 ## How to run using Docker
 

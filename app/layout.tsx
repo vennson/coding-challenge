@@ -19,8 +19,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Benson's Coding Challenge",
-  description: 'Emapta coding challenge by Benson Miakoun',
+  title: "Benson's Coding Exercise",
+  description: 'Emapta coding exercise by Benson Miakoun',
 }
 
 export default function RootLayout({
