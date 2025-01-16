@@ -1,5 +1,6 @@
 import { Flex, Title } from '@mantine/core'
 import Building from './components/Building'
+import Logs from './components/Logs'
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
               Elementary Elevator Control System
             </Title>
             <Building />
+            <Logs />
           </Flex>
         </Flex>
       </main>

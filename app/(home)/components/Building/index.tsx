@@ -1,6 +1,7 @@
 import { Box, Divider, Flex, Text } from '@mantine/core'
 import { ELEVATOR_HEIGHT, FLOORS_COUNT } from '../../constants'
-import Elevators from '../Elevators'
+import Elevators from './Elevators'
+import FloorRequests from './FloorRequests'
 
 export default function Building() {
   const floors = Array.from(Array(FLOORS_COUNT).keys())
@@ -18,6 +19,7 @@ export default function Building() {
         </Box>
       ))}
       <Elevators />
+      <FloorRequests />
     </Box>
   )
 }
