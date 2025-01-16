@@ -1,21 +1,23 @@
-import { Box, Divider, Text } from '@mantine/core'
-import { FLOORS_COUNT } from '../../constants'
+import { Box, Divider, Flex, Text } from '@mantine/core'
+import { ELEVATOR_HEIGHT, FLOORS_COUNT } from '../../constants'
+import Elevators from '../Elevators'
 
 export default function Building() {
   const floors = Array.from(Array(FLOORS_COUNT).keys())
   const reversed = floors.reverse()
 
   return (
-    <Box w={300} mt='md'>
+    <Box w={300} mt='md' pos='relative'>
       <Divider />
       {reversed.map((floor) => (
         <Box key={floor}>
-          <Text fz='xs' py={10}>
-            Floor {floor + 1}
-          </Text>
+          <Flex align='center' h={ELEVATOR_HEIGHT - 1}>
+            <Text fz='xs'>{floor + 1}F</Text>
+          </Flex>
           <Divider />
         </Box>
       ))}
+      <Elevators />
     </Box>
   )
 }
