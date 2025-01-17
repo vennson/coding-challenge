@@ -1,8 +1,15 @@
 export type ElevatorData = {
   id: number
-  status: Direction
+  status: ElevatorStatus
   path: number[]
   users: UserData[]
+  travelTimes: TravelTime[]
+  floor: number
+}
+
+export type TravelTime = {
+  to: number
+  time: number
 }
 
 export type RequestData = {
@@ -25,5 +32,6 @@ export type FloorData = {
   users: UserData[]
 }
 
+export type ElevatorStatus = 'UP' | 'DOWN' | 'IDLE'
 export type Direction = 'UP' | 'DOWN'
 export type Location = 'FLOOR' | 'ELEVATOR' | 'OUT'

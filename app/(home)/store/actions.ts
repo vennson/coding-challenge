@@ -1,7 +1,13 @@
 'use client'
 
 import { store } from '@/store'
-import { logsAtom, startedSimulationAtom, usersAtom } from './atoms'
+import {
+  elevatorAtomsMap,
+  elevatorsAtom,
+  logsAtom,
+  startedSimulationAtom,
+  usersAtom,
+} from './atoms'
 import { Direction, Location, UserData } from './types'
 import { getFromTo } from './utils'
 
@@ -10,18 +16,15 @@ const { set, get } = store
 export function startSimulation() {
   set(startedSimulationAtom, true)
   generateUsers()
-  setInterval(() => {
-    generateUsers()
-  }, 5000)
+  // setInterval(() => { //?
+  //   generateUsers()
+  // }, 5000)
 }
 
 function updateLogs(users: UserData[]) {
   const logs = get(logsAtom)
 
-  console.log('@@ users', users)
-
   const newUser = users[users.length - 1]
-  console.log('@@ newUser', newUser)
   if (newUser) {
     // prevent same log if similar user request is still pending
     const otherUsers = users.filter((user) => user.id !== newUser.id)
@@ -46,9 +49,47 @@ function updateLogs(users: UserData[]) {
       log = `<b>${similarUsers.length} users</b> waiting on <b>Floor ${newUser.from}</b> to go <b>"${newUser.direction}</b>"`
     }
 
-    console.log('@@ log', log)
     set(logsAtom, [...logs, log])
+    return isNewRequest
   }
+}
+
+function updateElevators(user: UserData) {
+  // get travel time of each elevator to user's floor
+  const elevators = get(elevatorsAtom)
+  const allTravelTimes = elevators.map((elev) => {
+    const travelTimeToUser = elev.travelTimes.find((t) => t.to === user.from)
+    const time = travelTimeToUser?.time || 0
+    return { id: elev.id, time }
+  }, [])
+
+  // get id of elevator with the shortest travel time
+  const shortestTravelTime = allTravelTimes.reduce((acc, cur) => {
+    if (acc.time <= cur.time) {
+      return acc
+    } else {
+      return cur
+    }
+  })
+  const bestElevatorId = shortestTravelTime.id
+
+  // update path of that elevator
+  const elevator = elevators.find((elev) => elev.id === bestElevatorId)
+
+  if (elevator) {
+    const newElevator = { ...elevator, path: [...elevator.path, user.from] }
+    const elevAtom = elevatorAtomsMap[bestElevatorId]
+    set(elevAtom, newElevator)
+  }
+  // const newElevators = elevators.map((elev) => {
+  //   if (bestElevatorId === elev.id) {
+  //     return { ...elev, path: [...elev.path, user.from] }
+  //   } else {
+  //     return elev
+  //   }
+  // })
+
+  // (update travel time of that elevator in the Elevator component)
 }
 
 function generateUsers() {
@@ -62,5 +103,6 @@ function generateUsers() {
   const newUsers = [...users, newUser]
 
   set(usersAtom, newUsers)
-  updateLogs(newUsers)
+  const isNewRequest = updateLogs(newUsers)
+  if (isNewRequest) updateElevators(newUser)
 }
