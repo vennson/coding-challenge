@@ -1,9 +1,16 @@
 'use client'
 
 import { Button, Flex, Text, Title } from '@mantine/core'
+import { startedSimulationAtom } from '../../store/atoms'
+import { startSimulation } from '../../store/actions'
+import { useAtomValue } from 'jotai'
 
 export default function Header() {
-  function onClick() {}
+  const started = useAtomValue(startedSimulationAtom)
+
+  function onClick() {
+    startSimulation()
+  }
 
   return (
     <Flex direction='column' align='center'>
@@ -13,7 +20,7 @@ export default function Header() {
       <Text ta='center' c='dimmed' fz='xs'>
         By: Benson Miakoun
       </Text>
-      <Button onClick={onClick} mt='md'>
+      <Button onClick={onClick} mt='md' disabled={started}>
         Start simulation
       </Button>
     </Flex>

@@ -1,5 +1,6 @@
+'use client'
+
 import { ELEVATOR_HEIGHT } from '@/app/(home)/constants'
-import { FloorData } from '@/app/(home)/types'
 import { GREEN, RED } from '@/app/(layout)/constants'
 import { Divider, Flex } from '@mantine/core'
 import {
@@ -7,16 +8,21 @@ import {
   IconTriangleInvertedFilled,
 } from '@tabler/icons-react'
 import UserStatus from '../Elevators/UserStatus'
+import { useAtomValue } from 'jotai'
+import { usersAtom } from '@/app/(home)/store/atoms'
 
 const ICON_SIZE = 12
 
 type Props = {
-  item: FloorData
+  id: number
 }
 
-export default function FloorRequest({ item }: Props) {
-  const hasUp = item.requests.some((item) => item.type === 'UP')
-  const hasDown = item.requests.some((item) => item.type === 'DOWN')
+export default function FloorRequest({ id }: Props) {
+  const users = useAtomValue(usersAtom)
+
+  const floorUsers = users.filter((user) => user.from === id)
+  const hasUp = floorUsers.some((user) => user.to > id)
+  const hasDown = floorUsers.some((user) => user.to < id)
 
   return (
     <Flex>
@@ -25,7 +31,7 @@ export default function FloorRequest({ item }: Props) {
         {hasUp && <IconTriangleFilled size={ICON_SIZE} color={GREEN} />}
         {hasDown && <IconTriangleInvertedFilled size={ICON_SIZE} color={RED} />}
       </Flex>
-      <UserStatus count={item.requests.length} />
+      <UserStatus count={floorUsers.length} />
     </Flex>
   )
 }

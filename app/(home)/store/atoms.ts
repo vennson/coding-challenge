@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
-import { ElevatorData, FloorData, RequestData } from '../types'
+import { ElevatorData, RequestData, UserData } from '../types'
 
 const DUMMY_ELEVATORS: ElevatorData[] = [
   {
@@ -59,60 +59,62 @@ const DUMMY_REQUESTS: RequestData[] = [
   },
 ]
 
-const DUMMY_FLOORS: FloorData[] = [
-  {
-    id: 1,
-    requests: [DUMMY_REQUESTS[0], DUMMY_REQUESTS[3]],
-    users: [{ id: 3, from: 1, to: 5 }],
-  },
-  {
-    id: 2,
-    requests: [],
-    users: [],
-  },
-  {
-    id: 3,
-    requests: [],
-    users: [],
-  },
-  {
-    id: 4,
-    requests: [],
-    users: [],
-  },
-  {
-    id: 5,
-    requests: [],
-    users: [],
-  },
-  {
-    id: 6,
-    requests: [],
-    users: [],
-  },
-  {
-    id: 7,
-    requests: [DUMMY_REQUESTS[2]],
-    users: [{ id: 3, from: 10, to: 3 }],
-  },
-  {
-    id: 8,
-    requests: [],
-    users: [],
-  },
-  {
-    id: 9,
-    requests: [],
-    users: [],
-  },
-  {
-    id: 10,
-    requests: [DUMMY_REQUESTS[1]],
-    users: [{ id: 3, from: 7, to: 9 }],
-  },
-]
+// export const FLOORS_INIT: FloorData[] = [
+//   {
+//     id: 1,
+//     requests: [],
+//     users: [],
+//   },
+//   {
+//     id: 2,
+//     requests: [],
+//     users: [],
+//   },
+//   {
+//     id: 3,
+//     requests: [],
+//     users: [],
+//   },
+//   {
+//     id: 4,
+//     requests: [],
+//     users: [],
+//   },
+//   {
+//     id: 5,
+//     requests: [],
+//     users: [],
+//   },
+//   {
+//     id: 6,
+//     requests: [],
+//     users: [],
+//   },
+//   {
+//     id: 7,
+//     requests: [],
+//     users: [],
+//   },
+//   {
+//     id: 8,
+//     requests: [],
+//     users: [],
+//   },
+//   {
+//     id: 9,
+//     requests: [],
+//     users: [],
+//   },
+//   {
+//     id: 10,
+//     requests: [],
+//     users: [],
+//   },
+// ]
 
+export const usersAtom = atom<UserData[]>([])
 export const elevatorsAtom = atom<ElevatorData[]>(DUMMY_ELEVATORS)
 export const logsAtom = atom<string[]>(DUMMY_LOGS)
 export const requestsAtom = atom<RequestData[]>(DUMMY_REQUESTS)
-export const floorsAtom = atom<FloorData[]>(DUMMY_FLOORS)
+// export const floorsAtom = atom<FloorData[]>(FLOORS_INIT)
+export const startedSimulationAtom = atom(false)
