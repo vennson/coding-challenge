@@ -2,7 +2,6 @@ import { useAtom, useSetAtom } from 'jotai'
 import { elevatorAtomsMap, logsAtom, usersAtom } from '../store/atoms'
 import {
   ElevatorData,
-  // ElevatorStatus,
   Location,
   Path,
   TravelTime,
@@ -28,11 +27,8 @@ export default function useElevatorSimulation({ item }: Props) {
   const setLogs = useSetAtom(logsAtom)
   const setUsers = useSetAtom(usersAtom)
   const topInit = getTop(floor)
-  // const [elevators, setElevators] = useAtom(elevatorsAtom)
   const [top, setTop] = useState(topInit)
 
-  // const elevator = elevators.find((elev) => elev.id === item.id)
-  // const top = (FLOORS_COUNT - floor) * ELEVATOR_HEIGHT
   const targetPath = elevator?.paths[0]
   const elevatorId = elevator?.id
 
@@ -87,9 +83,11 @@ export default function useElevatorSimulation({ item }: Props) {
             }
           })
           const filteredPaths = prev.paths.filter((path) => path.from !== floor)
-          const paths = sortPaths([...filteredPaths, ...newPaths])
+          const paths = sortPaths(
+            [...filteredPaths, ...newPaths],
+            targetPath.direction,
+          )
           const users = [...remainUsers, ...floorUsers]
-          console.log('@@ updateElev', { ...prev, users, paths, status: 'WAIT' })
           return { ...prev, users, paths, status: 'WAIT' }
         })
 

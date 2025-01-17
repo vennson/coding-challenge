@@ -18,8 +18,6 @@ type Props = {
 
 export default function Elevator({ item }: Props) {
   const left = (ELEVATOR_WIDTH + 17) * (item.id - 1)
-  // const floor = item.floor
-  // const top = (FLOORS_COUNT - floor) * ELEVATOR_HEIGHT
   const bg = getBg()
   const icon = getIcon()
   const { top } = useElevatorSimulation({ item })
