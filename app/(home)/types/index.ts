@@ -8,15 +8,17 @@ export type ElevatorData = {
 export type RequestData = {
   id: number
   type: "UP" | "DOWN"
-  fromFloor: number
+  from: number
 }
 
 export type UserData = {
   id: number
-  destination: number
+  from: number
+  to: number
 }
 
 export type FloorData = {
   id: number
   requests: RequestData[]
+  users: UserData[]
 }

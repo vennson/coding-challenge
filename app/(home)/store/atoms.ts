@@ -18,13 +18,13 @@ const DUMMY_ELEVATORS: ElevatorData[] = [
     id: 3,
     status: 'UP',
     path: [3, 5],
-    users: [{ id: 1, destination: 5 }],
+    users: [{ id: 1, from: 3, to: 5 }],
   },
   {
     id: 4,
     status: 'DOWN',
     path: [10, 4, 9],
-    users: [{ id: 2, destination: 9 }],
+    users: [{ id: 2, from: 10, to: 9 }],
   },
 ]
 
@@ -40,60 +40,75 @@ const DUMMY_REQUESTS: RequestData[] = [
   {
     id: 1,
     type: 'UP',
-    fromFloor: 1,
+    from: 1,
   },
   {
     id: 2,
     type: 'DOWN',
-    fromFloor: 10,
+    from: 10,
   },
   {
     id: 3,
     type: 'UP',
-    fromFloor: 7,
+    from: 7,
+  },
+  {
+    id: 4,
+    type: 'DOWN',
+    from: 7,
   },
 ]
 
 const DUMMY_FLOORS: FloorData[] = [
   {
     id: 1,
-    requests: [DUMMY_REQUESTS[0]],
+    requests: [DUMMY_REQUESTS[0], DUMMY_REQUESTS[3]],
+    users: [{ id: 3, from: 1, to: 5 }],
   },
   {
     id: 2,
     requests: [],
+    users: [],
   },
   {
     id: 3,
     requests: [],
+    users: [],
   },
   {
     id: 4,
     requests: [],
+    users: [],
   },
   {
     id: 5,
     requests: [],
+    users: [],
   },
   {
     id: 6,
     requests: [],
+    users: [],
   },
   {
     id: 7,
     requests: [DUMMY_REQUESTS[2]],
+    users: [{ id: 3, from: 10, to: 3 }],
   },
   {
     id: 8,
     requests: [],
+    users: [],
   },
   {
     id: 9,
     requests: [],
+    users: [],
   },
   {
     id: 10,
     requests: [DUMMY_REQUESTS[1]],
+    users: [{ id: 3, from: 7, to: 9 }],
   },
 ]
 

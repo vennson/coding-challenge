@@ -12,8 +12,9 @@ export default function Building() {
       <Divider />
       {reversed.map((floor) => (
         <Box key={floor}>
-          <Flex align='center' h={ELEVATOR_HEIGHT - 1}>
+          <Flex align='center' h={ELEVATOR_HEIGHT - 1} w={30}>
             <Text fz='xs'>{floor + 1}F</Text>
+            <Divider orientation='vertical' ml='auto' />
           </Flex>
           <Divider />
         </Box>

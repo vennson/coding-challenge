@@ -10,7 +10,7 @@ export default function Elevators() {
 
   return (
     <Box pos='absolute' top={0}>
-      <Box pos='relative' left={20}>
+      <Box pos='relative' left={30}>
         {elevators.map((item) => (
           <Elevator key={item.id} item={item} />
         ))}

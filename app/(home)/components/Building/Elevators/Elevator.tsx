@@ -1,12 +1,13 @@
 import { Flex, Text } from '@mantine/core'
 import { motion } from 'motion/react'
-import { IconArrowDown, IconArrowUp, IconUser } from '@tabler/icons-react'
+import { IconArrowDown, IconArrowUp } from '@tabler/icons-react'
 import {
   ELEVATOR_HEIGHT,
   ELEVATOR_WIDTH,
   FLOORS_COUNT,
 } from '@/app/(home)/constants'
 import { ElevatorData } from '@/app/(home)/types'
+import UserStatus from './UserStatus'
 
 const ICON_SIZE = 14
 
@@ -48,10 +49,7 @@ export default function Elevator({ item }: Props) {
           <Text fz='xs'>C{item.id}</Text>
           {icon}
         </Flex>
-        <Flex align='center'>
-          <IconUser size={ICON_SIZE} />
-          <Text fz='xs'>{item.users.length}</Text>
-        </Flex>
+        {<UserStatus count={item.users.length} />}
       </Flex>
     </motion.div>
   )

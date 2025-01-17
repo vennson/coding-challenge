@@ -9,7 +9,7 @@ export default function FloorRequests() {
   const floors = useAtomValue(floorsAtom)
 
   return (
-    <Box pos='absolute' right={10} top={0}>
+    <Box pos='absolute' right={36} top={0}>
       {floors.map((item) => (
         <FloorRequest key={item.id} item={item} />
       ))}
