@@ -20,7 +20,9 @@ type Props = {
 export default function FloorRequest({ id }: Props) {
   const users = useAtomValue(usersAtom)
 
-  const floorUsers = users.filter((user) => user.from === id)
+  const floorUsers = users.filter(
+    (user) => user.from === id && user.location === 'FLOOR',
+  )
   const upUsers = floorUsers.filter((user) => user.direction === 'UP')
   const downUsers = floorUsers.filter((user) => user.direction === 'DOWN')
   const hasUp = upUsers.length > 0
@@ -39,7 +41,7 @@ export default function FloorRequest({ id }: Props) {
         {hasDown && (
           <Flex align='center'>
             <IconTriangleInvertedFilled size={ICON_SIZE} color={RED} />
-            <UserStatus count={downUsers.length} color={RED}  />
+            <UserStatus count={downUsers.length} color={RED} />
           </Flex>
         )}
       </Flex>
