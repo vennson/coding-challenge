@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, ScrollArea, Text, Title } from '@mantine/core'
+import { Box, Divider, ScrollArea, Text, Title } from '@mantine/core'
 import { useAtomValue } from 'jotai'
 import { logsAtom } from '../../store/atoms'
 import { useEffect, useRef } from 'react'
@@ -27,6 +27,7 @@ export default function Logs() {
   return (
     <Box w='100%' mt='md'>
       <Title order={5}>Logs</Title>
+      <Divider/>
       {!hasLogs && (
         <Text fz='xs' c='dimmed'>
           Start the simulation to see logs
@@ -37,6 +38,7 @@ export default function Logs() {
           <Box key={index} fz='xs' dangerouslySetInnerHTML={{ __html: log }} />
         ))}
       </ScrollArea>
+      <Divider/>
     </Box>
   )
 }
