@@ -67,7 +67,7 @@ const ELEVATORS_INIT: ElevatorData[] = [
     id: 1,
     status: 'IDLE',
     floor: 1,
-    path: [],
+    paths: [],
     users: [],
     travelTimes: TRAVEL_TIMES_INIT,
   },
@@ -75,7 +75,7 @@ const ELEVATORS_INIT: ElevatorData[] = [
     id: 2,
     status: 'IDLE',
     floor: 1,
-    path: [],
+    paths: [],
     users: [],
     travelTimes: TRAVEL_TIMES_INIT,
   },
@@ -83,7 +83,7 @@ const ELEVATORS_INIT: ElevatorData[] = [
     id: 3,
     status: 'IDLE',
     floor: 1,
-    path: [],
+    paths: [],
     users: [],
     travelTimes: TRAVEL_TIMES_INIT,
   },
@@ -91,7 +91,7 @@ const ELEVATORS_INIT: ElevatorData[] = [
     id: 4,
     status: 'IDLE',
     floor: 1,
-    path: [],
+    paths: [],
     users: [],
     travelTimes: TRAVEL_TIMES_INIT,
   },
@@ -185,10 +185,7 @@ export const elevator3Atom = atom<ElevatorData>(ELEVATORS_INIT[2])
 export const elevator4Atom = atom<ElevatorData>(ELEVATORS_INIT[3])
 
 // ATOMS MAPPING
-export const elevatorAtomsMap: Record<
-  number,
-  PrimitiveAtom<ElevatorData>
-> = {
+export const elevatorAtomsMap: Record<number, PrimitiveAtom<ElevatorData>> = {
   1: elevator1Atom,
   2: elevator2Atom,
   3: elevator3Atom,

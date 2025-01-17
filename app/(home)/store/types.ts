@@ -1,10 +1,15 @@
 export type ElevatorData = {
   id: number
   status: ElevatorStatus
-  path: number[]
+  paths: Path[]
   users: UserData[]
   travelTimes: TravelTime[]
   floor: number
+}
+
+export type Path = {
+  from: number
+  direction: Direction
 }
 
 export type TravelTime = {

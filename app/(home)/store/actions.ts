@@ -8,7 +8,7 @@ import {
   startedSimulationAtom,
   usersAtom,
 } from './atoms'
-import { Direction, Location, UserData } from './types'
+import { Direction, ElevatorData, Location, Path, UserData } from './types'
 import { getFromTo } from './utils'
 
 const { set, get } = store
@@ -18,7 +18,7 @@ export function startSimulation() {
   generateUsers()
   // setInterval(() => { //?
   //   generateUsers()
-  // }, 5000)
+  // }, USER_GENERATE_SECONDS * 1000)
 }
 
 function updateLogs(users: UserData[]) {
@@ -73,11 +73,17 @@ function updateElevators(user: UserData) {
   })
   const bestElevatorId = shortestTravelTime.id
 
-  // update path of that elevator
+  // update path of best elevator
   const elevator = elevators.find((elev) => elev.id === bestElevatorId)
 
   if (elevator) {
-    const newElevator = { ...elevator, path: [...elevator.path, user.from] }
+    const newPaths: Path[] = [
+      ...elevator.paths,
+      { from: user.from, direction: user.direction },
+    ]
+    // const nextPath = newPath[0]
+    // const nextStatus =
+    const newElevator: ElevatorData = { ...elevator, paths: newPaths }
     const elevAtom = elevatorAtomsMap[bestElevatorId]
     set(elevAtom, newElevator)
   }
@@ -89,7 +95,7 @@ function updateElevators(user: UserData) {
   //   }
   // })
 
-  // (update travel time of that elevator in the Elevator component)
+  // (update travelTimes of best elevator in the Elevator component)
 }
 
 function generateUsers() {
