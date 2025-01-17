@@ -2,12 +2,11 @@ import { Box } from '@mantine/core'
 import FloorRequest from './FloorRequest'
 // import { floorsAtom } from '@/app/(home)/store/atoms'
 // import { useAtomValue } from 'jotai'
-import { FLOORS_COUNT } from '@/app/(home)/constants'
+import { FLOORS_COUNT } from '@/app/(home)/store/constants'
 
 export default function FloorRequests() {
   const floors = Array.from({ length: FLOORS_COUNT }, (_, i) => i + 1)
   const reversed = floors.reverse()
-  console.log('@@ reversed', reversed)
   // const floors = useAtomValue(floorsAtom)
   // const users = useAtomValue(usersAtom)
 

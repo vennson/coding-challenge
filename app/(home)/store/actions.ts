@@ -1,9 +1,9 @@
 'use client'
 
 import { store } from '@/store'
-import { startedSimulationAtom, usersAtom } from './atoms'
-import { FLOORS_COUNT } from '../constants'
-// import { UserData } from '../types'
+import { logsAtom, startedSimulationAtom, usersAtom } from './atoms'
+import { Direction, Location, UserData } from './types'
+import { getFromTo } from './utils'
 
 const { set, get } = store
 
@@ -12,36 +12,55 @@ export function startSimulation() {
   generateUsers()
   setInterval(() => {
     generateUsers()
-    // updateFloors(users)
   }, 5000)
 }
 
-// function updateFloors(users: UserData[]) {
-//   const floors = get(floorsAtom)
-//   const newFloors = floors.map((floor) => {
-//     return { ...floor }
-//   })
-//   set(floorsAtom, newFloors)
-// }
+function updateLogs(users: UserData[]) {
+  const logs = get(logsAtom)
+
+  console.log('@@ users', users)
+
+  const newUser = users[users.length - 1]
+  console.log('@@ newUser', newUser)
+  if (newUser) {
+    // prevent same log if similar user request is still pending
+    const otherUsers = users.filter((user) => user.id !== newUser.id)
+    let isNewRequest = true
+    for (const user of otherUsers) {
+      const sameDirection = user.direction === newUser.direction
+      const sameFloorFrom = user.from === newUser.from
+      const isInFloor = user.location === 'FLOOR'
+      if (sameDirection && sameFloorFrom && isInFloor) {
+        isNewRequest = false
+        break
+      }
+    }
+
+    let log
+    if (isNewRequest) {
+      log = `<b>"${newUser.direction}"</b> request on <b>Floor ${newUser.from}</b> received`
+    } else {
+      const similarUsers = users.filter(
+        (u) => u.from === newUser.from && u.direction === newUser.direction,
+      )
+      log = `<b>${similarUsers.length} users</b> waiting on <b>Floor ${newUser.from}</b> to go <b>"${newUser.direction}</b>"`
+    }
+
+    console.log('@@ log', log)
+    set(logsAtom, [...logs, log])
+  }
+}
 
 function generateUsers() {
   const users = get(usersAtom) || []
 
   const id = users.length + 1
   const { from, to } = getFromTo()
-  const newUser = { id, from, to }
+  const direction: Direction = to > from ? 'UP' : 'DOWN'
+  const location: Location = 'FLOOR'
+  const newUser = { id, from, to, direction, location }
+  const newUsers = [...users, newUser]
 
-  set(usersAtom, [...users, newUser])
-}
-
-function getFromTo() {
-  const floors = Array.from({ length: FLOORS_COUNT }, (_, i) => i + 1)
-  const fromIndex = Math.floor(Math.random() * floors.length)
-  const from = floors[fromIndex]
-
-  // remove the 'from' floor and pick from remaining floors
-  floors.splice(fromIndex, 1)
-  const to = floors[Math.floor(Math.random() * floors.length)]
-
-  return { from, to }
+  set(usersAtom, newUsers)
+  updateLogs(newUsers)
 }

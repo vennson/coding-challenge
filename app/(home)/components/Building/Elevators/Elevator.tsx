@@ -5,8 +5,8 @@ import {
   ELEVATOR_HEIGHT,
   ELEVATOR_WIDTH,
   FLOORS_COUNT,
-} from '@/app/(home)/constants'
-import { ElevatorData } from '@/app/(home)/types'
+} from '@/app/(home)/store/constants'
+import { ElevatorData } from '@/app/(home)/store/types'
 import UserStatus from './UserStatus'
 
 const ICON_SIZE = 14

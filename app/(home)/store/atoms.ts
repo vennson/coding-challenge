@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
-import { ElevatorData, RequestData, UserData } from '../types'
+import { ElevatorData, RequestData, UserData } from './types'
 
 const DUMMY_ELEVATORS: ElevatorData[] = [
   {
@@ -28,13 +28,13 @@ const DUMMY_ELEVATORS: ElevatorData[] = [
   },
 ]
 
-const DUMMY_LOGS = [
-  'Car 1 is on Floor 3',
-  'Car 2 is on Floor 10',
-  '"DOWN" request on Floor 4 received',
-  '"UP" request on Floor 7 received',
-  '"Floor 5" request on Car 3 received',
-]
+// const DUMMY_LOGS = [
+//   'Car 1 is on Floor 3',
+//   'Car 2 is on Floor 10',
+//   '"DOWN" request on Floor 4 received',
+//   '"UP" request on Floor 7 received',
+//   '"Floor 5" request on Car 3 received',
+// ]
 
 const DUMMY_REQUESTS: RequestData[] = [
   {
@@ -114,7 +114,7 @@ const DUMMY_REQUESTS: RequestData[] = [
 
 export const usersAtom = atom<UserData[]>([])
 export const elevatorsAtom = atom<ElevatorData[]>(DUMMY_ELEVATORS)
-export const logsAtom = atom<string[]>(DUMMY_LOGS)
+export const logsAtom = atom<string[]>([])
 export const requestsAtom = atom<RequestData[]>(DUMMY_REQUESTS)
 // export const floorsAtom = atom<FloorData[]>(FLOORS_INIT)
 export const startedSimulationAtom = atom(false)

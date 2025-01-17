@@ -1,5 +1,5 @@
 import { Box, Divider, Flex, Text } from '@mantine/core'
-import { ELEVATOR_HEIGHT, FLOORS_COUNT } from '../../constants'
+import { ELEVATOR_HEIGHT, FLOORS_COUNT } from '../../store/constants'
 import Elevators from './Elevators'
 import FloorRequests from './FloorRequests'
 
