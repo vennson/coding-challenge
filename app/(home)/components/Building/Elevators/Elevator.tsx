@@ -1,6 +1,6 @@
 import { Flex, Text } from '@mantine/core'
 import { motion } from 'motion/react'
-import { IconArrowDown, IconArrowUp } from '@tabler/icons-react'
+import { IconArrowDown, IconArrowUp, IconClock } from '@tabler/icons-react'
 import {
   ELEVATOR_HEIGHT,
   ELEVATOR_WIDTH,
@@ -32,6 +32,8 @@ export default function Elevator({ item }: Props) {
         return <IconArrowUp size={ICON_SIZE} />
       case 'DOWN':
         return <IconArrowDown size={ICON_SIZE} />
+      case 'WAIT':
+        return <IconClock size={ICON_SIZE} />
       default:
         break
     }
@@ -45,14 +47,14 @@ export default function Elevator({ item }: Props) {
         return 'green'
       case 'DOWN':
         return 'red'
+      case 'WAIT':
+        return 'orange'
       default:
         break
     }
   }
 
   if (item.id === 1) {
-    console.log('@@ item', item)
-    console.log('@@ top', top)
   }
 
   return (

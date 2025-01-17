@@ -37,6 +37,6 @@ export type FloorData = {
   users: UserData[]
 }
 
-export type ElevatorStatus = 'UP' | 'DOWN' | 'IDLE'
+export type ElevatorStatus = 'UP' | 'DOWN' | 'IDLE' | 'WAIT'
 export type Direction = 'UP' | 'DOWN'
 export type Location = 'FLOOR' | 'ELEVATOR' | 'OUT'

@@ -2,17 +2,20 @@ import { useAtom, useSetAtom } from 'jotai'
 import { elevatorAtomsMap, logsAtom, usersAtom } from '../store/atoms'
 import {
   ElevatorData,
-  ElevatorStatus,
+  // ElevatorStatus,
   Location,
   Path,
+  TravelTime,
   UserData,
 } from '../store/types'
 import { useEffect, useState } from 'react'
 import {
   ELEVATOR_HEIGHT,
+  ELEVATOR_WAIT_SECONDS,
   FLOOR_TRAVEL_SECONDS,
   FLOORS_COUNT,
 } from '../store/constants'
+import { getTravelTimes, sortPaths } from '../store/utils'
 
 type Props = {
   item: ElevatorData
@@ -40,6 +43,17 @@ export default function useElevatorSimulation({ item }: Props) {
   // handle elevator movement
   useEffect(() => {
     if (!elevatorId) return
+
+    // make the elevator wait when it stops on destination floors
+    if (item.status === 'WAIT') {
+      setTimeout(() => {
+        setElevator((prev) => {
+          return { ...prev, status: 'IDLE' }
+        })
+      }, ELEVATOR_WAIT_SECONDS * 1000)
+      return
+    }
+
     if (!targetPath) return
 
     if (targetPath.from === floor) {
@@ -58,8 +72,12 @@ export default function useElevatorSimulation({ item }: Props) {
           return user
         })
 
-        // add users to the elevator, and update elevator's path based on user's destination
+        // 1. remove arrived users from the elevator
+        // 2. add users to the elevator,
+        // 3. remove elevator's paths that have same floor with current floor
+        // 4. add new elevator's path based on user's destination
         setElevator((prev) => {
+          const remainUsers = prev.users.filter((user) => user.to !== floor)
           const destinations = floorUsers.map((user) => user.to)
           const uniqueDestinations = Array.from(new Set(destinations))
           const newPaths: Path[] = uniqueDestinations.map((dest) => {
@@ -68,75 +86,53 @@ export default function useElevatorSimulation({ item }: Props) {
               direction: targetPath.direction,
             }
           })
-          return {
-            ...prev,
-            users: [...prev.users, ...floorUsers],
-            paths: newPaths,
-          }
+          const filteredPaths = prev.paths.filter((path) => path.from !== floor)
+          const paths = sortPaths([...filteredPaths, ...newPaths])
+          const users = [...remainUsers, ...floorUsers]
+          console.log('@@ updateElev', { ...prev, users, paths, status: 'WAIT' })
+          return { ...prev, users, paths, status: 'WAIT' }
         })
 
-        // remove arrived users from the elevator
-        const filteredUsers = newUsers.filter((user) => {
-          return user.to !== floor
-        })
-        console.log('@@ newUsers', newUsers)
-        console.log('@@ filteredUsers', filteredUsers)
-        return filteredUsers
+        return newUsers
       })
     }
 
+    // to move the elevator up
     if (targetPath.from > floor) {
       const newTop = getTop(floor + 1)
       setTop(newTop)
+      setElevator((prev) => ({ ...prev, status: 'UP' }))
       setTimeout(() => {
+        const travelTimes: TravelTime[] = getTravelTimes(floor, targetPath.from)
         setElevator((prev) => ({
           ...prev,
           floor: floor + 1,
+          travelTimes,
         }))
       }, FLOOR_TRAVEL_SECONDS * 1000)
     }
 
+    // to move the elevator down
     if (targetPath.from < floor) {
       const newTop = getTop(floor - 1)
       setTop(newTop)
+      setElevator((prev) => ({ ...prev, status: 'DOWN' }))
       setTimeout(() => {
+        const travelTimes: TravelTime[] = getTravelTimes(floor, targetPath.from)
         setElevator((prev) => ({
           ...prev,
           floor: floor - 1,
+          travelTimes,
         }))
       }, FLOOR_TRAVEL_SECONDS * 1000)
     }
-
-    // every change of floor, calculate the travelTimes to each floor
-    // TODO
-  }, [elevatorId, floor, setElevator, setUsers, targetPath])
+  }, [elevatorId, floor, item.status, setElevator, setUsers, targetPath])
 
   // handle elevator logs
   useEffect(() => {
     const log = `<b>Car ${elevatorId}</b> is on <b>Floor ${floor}</b>`
     setLogs((prev) => [...prev, log])
   }, [elevatorId, floor, setLogs])
-
-  // handle elevator status
-  useEffect(() => {
-    // if (!targetPath) return
-
-    let status: ElevatorStatus
-    switch (true) {
-      case !targetPath?.from:
-        status = 'IDLE'
-        break
-      case floor < targetPath.from:
-        status = 'UP'
-        break
-      case floor > targetPath.from:
-        status = 'DOWN'
-        break
-      default:
-        break
-    }
-    setElevator((prev) => ({ ...prev, status }))
-  }, [floor, setElevator, targetPath])
 
   return { top }
 }

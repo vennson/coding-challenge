@@ -9,16 +9,25 @@ import {
   usersAtom,
 } from './atoms'
 import { Direction, ElevatorData, Location, Path, UserData } from './types'
-import { getFromTo } from './utils'
+import { getFromTo, sortPaths } from './utils'
+import { USER_GENERATE_SECONDS } from './constants'
 
 const { set, get } = store
 
 export function startSimulation() {
   set(startedSimulationAtom, true)
-  generateUsers()
+  // generateUsers()
   // setInterval(() => { //?
   //   generateUsers()
   // }, USER_GENERATE_SECONDS * 1000)
+  //!
+  generateUsers(4, 2)
+  setTimeout(() => {
+    generateUsers(3, 4)
+  }, USER_GENERATE_SECONDS * 1000 * 0.5)
+  // setTimeout(() => {
+  //   generateUsers(1, 5)
+  // }, USER_GENERATE_SECONDS * 1000 * 2.1)
 }
 
 function updateLogs(users: UserData[]) {
@@ -60,11 +69,30 @@ function updateElevators(user: UserData) {
   const allTravelTimes = elevators.map((elev) => {
     const travelTimeToUser = elev.travelTimes.find((t) => t.to === user.from)
     const time = travelTimeToUser?.time || 0
-    return { id: elev.id, time }
+    return { id: elev.id, time, status: elev.status, floor: elev.floor }
   }, [])
 
+  // todo: prioritize waiting elevators, maybe logic will be done in Elevator component
+
+  // filter out elevators that are not valid for user
+  const validElevators = allTravelTimes.filter((elev) => {
+    if (user.direction === elev.status) {
+      if (elev.status === 'UP' && elev.floor < user.from) {
+        return true
+      } else if (elev.status === 'DOWN' && elev.floor > user.from) {
+        return true
+      }
+    }
+
+    if (elev.status === 'WAIT' && elev.floor === user.from) {
+      return true
+    }
+
+    if (elev.status === 'IDLE') return true
+  })
+
   // get id of elevator with the shortest travel time
-  const shortestTravelTime = allTravelTimes.reduce((acc, cur) => {
+  const shortestTravelTime = validElevators.reduce((acc, cur) => {
     if (acc.time <= cur.time) {
       return acc
     } else {
@@ -72,6 +100,8 @@ function updateElevators(user: UserData) {
     }
   })
   const bestElevatorId = shortestTravelTime.id
+
+  console.log('@@ shortestTravelTime', shortestTravelTime)
 
   // update path of best elevator
   const elevator = elevators.find((elev) => elev.id === bestElevatorId)
@@ -81,10 +111,14 @@ function updateElevators(user: UserData) {
       ...elevator.paths,
       { from: user.from, direction: user.direction },
     ]
+    const sortedPaths = sortPaths(newPaths)
+
     // const nextPath = newPath[0]
     // const nextStatus =
-    const newElevator: ElevatorData = { ...elevator, paths: newPaths }
+    const newElevator: ElevatorData = { ...elevator, paths: sortedPaths }
     const elevAtom = elevatorAtomsMap[bestElevatorId]
+
+    console.log('@@ newElevator', newElevator)
     set(elevAtom, newElevator)
   }
   // const newElevators = elevators.map((elev) => {
@@ -98,11 +132,11 @@ function updateElevators(user: UserData) {
   // (update travelTimes of best elevator in the Elevator component)
 }
 
-function generateUsers() {
+function generateUsers(_from?: number, _to?: number) {
   const users = get(usersAtom) || []
 
   const id = users.length + 1
-  const { from, to } = getFromTo()
+  const { from, to } = getFromTo(_from, _to)
   const direction: Direction = to > from ? 'UP' : 'DOWN'
   const location: Location = 'FLOOR'
   const newUser = { id, from, to, direction, location }
