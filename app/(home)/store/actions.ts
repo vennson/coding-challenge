@@ -22,7 +22,7 @@ export function startSimulation() {
   }, USER_GENERATE_SECONDS * 1000)
 }
 
-function updateLogs(users: UserData[]) {
+function getLogs(users: UserData[]) {
   const logs = get(logsAtom)
 
   const newUser = users[users.length - 1]
@@ -50,8 +50,8 @@ function updateLogs(users: UserData[]) {
       log = `<b>${similarUsers.length} users</b> waiting on <b>Floor ${newUser.from}</b> to go <b>"${newUser.direction}</b>"`
     }
 
-    set(logsAtom, [...logs, log])
-    return isNewRequest
+    const newLogs = [...logs, log]
+    return { isNewRequest, newLogs }
   }
 }
 
@@ -95,11 +95,10 @@ function updateElevators(user: UserData) {
     if (elev.status === 'IDLE') return true
   })
 
-  const elevatorOptions =
-    betterElevators.length > 0 ? betterElevators : allTravelTimes
+  if (betterElevators.length === 0) return false
 
   // get id of elevator with the shortest travel time
-  const shortestTravelTime = elevatorOptions.reduce((acc, cur) => {
+  const shortestTravelTime = betterElevators.reduce((acc, cur) => {
     if (acc.time <= cur.time) {
       return acc
     } else {
@@ -121,6 +120,7 @@ function updateElevators(user: UserData) {
     const elevAtom = elevatorAtomsMap[bestElevatorId]
 
     set(elevAtom, newElevator)
+    return true
   }
 }
 
@@ -134,7 +134,12 @@ function generateUsers() {
   const newUser = { id, from, to, direction, location }
   const newUsers = [...users, newUser]
 
-  set(usersAtom, newUsers)
-  const isNewRequest = updateLogs(newUsers)
-  if (isNewRequest) updateElevators(newUser)
+  const { isNewRequest, newLogs } = getLogs(newUsers) || {}
+  if (isNewRequest) {
+    const success = updateElevators(newUser)
+    if (success) {
+      if (newLogs) set(logsAtom, newLogs)
+      set(usersAtom, newUsers)
+    }
+  }
 }
